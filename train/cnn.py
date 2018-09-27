@@ -10,7 +10,10 @@ import numpy as np
 import os
 from PIL import Image
 from sklearn.cross_validation import train_test_split
-os.chdir("/home/y/Desktop/gcnn/train");
+os.chdir("/home/ynl/Desktop/gcnn/train");
+
+
+
 
 
 def train():
@@ -60,8 +63,8 @@ def train():
 	model.add(Activation('softmax'));
 	model.compile(loss='categorical_crossentropy',optimizer='adadelta',metrics=['accuracy'])
 	#################################
-	nb_epoch=20; ##iteraciones
-	batch_size=10;
+	nb_epoch=50; ##iteraciones
+	batch_size=100;
 	model.fit(x_train,Y_train,batch_size=batch_size,nb_epoch=nb_epoch,verbose=1,validation_data=(x_test, Y_test))
 
 	model_json = model.to_json()
