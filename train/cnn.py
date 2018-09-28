@@ -10,25 +10,22 @@ import numpy as np
 import os
 from PIL import Image
 from sklearn.cross_validation import train_test_split
-os.chdir("/home/ynl/Desktop/gcnn/train");
 
-
-
+PATH = os.getcwd(); #"/home/y/.../gcnn/train"
+os.chdir(PATH);
 
 
 def train():
-	# input image dimensions
-	m,n = 32,32
-	path2="data_num";
-
-	classes=os.listdir(path2)
+	m,n = 32,32 # dimensiones de la imagen de entrada
+	path2="data_num"; #carpeta de dataset
+	classes=os.listdir(path2) #cada carpeta es una CLASE
 	x=[]
 	y=[]
-	for fol in classes:##para cada clase fol==[A,B..2]
+	for fol in classes:##para cada clase fol==[class 1,class 2, .., class N]
 		imgfiles=os.listdir(path2+'/'+fol);
 		for img in imgfiles:##para cada imagen
 			im=Image.open(path2+'/'+fol+'/'+img);
-			im=im.convert(mode='RGB')
+			im=im.convert(mode='RGB') ##  --
 			imrs=im.resize((m,n))
 			imrs=img_to_array(imrs)/255;
 			imrs=imrs.transpose(2,0,1);
@@ -49,6 +46,19 @@ def train():
 	uniques, id_test=np.unique(y_test,return_inverse=True)
 	Y_test=np_utils.to_categorical(id_test,nb_classes)
 	################################# modelo 1
+	model = get_cnn_model();
+	#################################
+	nb_epoch=10; ##iteraciones
+	batch_size=100;
+	model.fit(x_train,Y_train,batch_size=batch_size,nb_epoch=nb_epoch,verbose=1,validation_data=(x_test, Y_test))
+
+	model_json = model.to_json()
+	with open("model.json", "w") as json_file:
+	    json_file.write(model_json)
+	model.save_weights("model.h5")
+
+
+def get_cnn_model():
 	model= Sequential()
 	model.add(Convolution2D(16,3,3,border_mode='same',input_shape=x_train.shape[1:]))
 	model.add(Activation('relu'));
@@ -62,17 +72,7 @@ def train():
 	model.add(Dense(nb_classes));#fullconected?
 	model.add(Activation('softmax'));
 	model.compile(loss='categorical_crossentropy',optimizer='adadelta',metrics=['accuracy'])
-	#################################
-	nb_epoch=50; ##iteraciones
-	batch_size=100;
-	model.fit(x_train,Y_train,batch_size=batch_size,nb_epoch=nb_epoch,verbose=1,validation_data=(x_test, Y_test))
-
-	model_json = model.to_json()
-	with open("model.json", "w") as json_file:
-	    json_file.write(model_json)
-	model.save_weights("model.h5")
-
-
+	return model
 
 train();
 
