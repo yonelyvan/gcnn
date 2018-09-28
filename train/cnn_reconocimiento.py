@@ -54,15 +54,15 @@ def predecir(x):
 	loaded_model.compile(loss='categorical_crossentropy',optimizer='adadelta',metrics=['accuracy'])
 	predictions = loaded_model.predict(x)
 	pred = predictions*100
-	print (pred).astype(int)
+	#print (pred).astype(int)
 	
 	label_placa = ''
 	for i in range(len(pred)):
 		m = max(pred[i])
 		index =np.where(pred[i] >=m)[0][0]
-		if m >40:#si tiene mas de 35% de pertenencia 
+		vector_result.append(clases[index])
+		#if m >40:#si tiene mas de 35% de pertenencia 
 			#print "clase de pertenencia:", clases[index]
-			vector_result.append(clases[index])
 	return label_placa
 
 
@@ -82,7 +82,7 @@ def test():
 		total_por_clase[ clases_num[img_class_label] ] +=1
 		#print "imagen: ",get_class_from_name(vector_test[i])," -> ", vector_result[i]
 		
-	print mc
+	#print mc
 	print total_por_clase
 	#prcentages por clase
 	for i in range(total_por_clase.size): 
