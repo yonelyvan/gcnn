@@ -51,9 +51,14 @@ def get_cnn_model(shape, nb_classes): #individuo
 	model= Sequential()
 	model.add(Convolution2D(16,3,3,border_mode='same',input_shape= shape))
 	model.add(Activation('relu'));
+
+	#model.add(Convolution2D(16,2,2));
+	#model.add(Activation('relu'));
+
 	model.add(Convolution2D(16,2,2));
 	model.add(Activation('relu'));
 	model.add(MaxPooling2D(pool_size=(3,3)));
+
 	model.add(Dropout(0.5));
 	model.add(Flatten());
 	model.add(Dense(512));
