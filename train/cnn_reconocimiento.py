@@ -10,28 +10,29 @@ import numpy as np
 import os
 from PIL import Image
 from sklearn.cross_validation import train_test_split
-print "___________________________________________"
 K.set_image_dim_ordering('th')
+print "___________________________________________\n"
+PATH = os.getcwd();  #/home/y/.../gcnn/train"
 
-path = "/home/ynl/Desktop/gcnn/train";
+folder_datos_prueba = '/temp' 
 
 vector_test =[]
 vector_result =[]
 clases = ['0','1','2','3','4','5','6','7','8','9'] ##clases
 
-def cargar_imagenes_prueba(carpeta):
-	path1='/home/ynl/Desktop/gcnn/train/temp' #path+carpeta;#carpeta
+def cargar_imagenes_prueba():
+	path_data = PATH+folder_datos_prueba
 	# input image dimensions
 	m,n = 32,32
 	x=[]
-	import natsort
-	imgfiles = natsort.natsorted(os.listdir(path1))
+	#import natsort #natsort.natsorted(os.listdir(path_data)) #para ordenar por nombre de archivo
+	imgfiles = os.listdir(path_data) 
 	#print imgfiles
 	for img in imgfiles:##para cada imagen
 		#print img
 		vector_test.append(img)
-		im=Image.open(path1+'/'+img);
-		im=im.convert(mode='RGB')
+		im=Image.open(path_data+'/'+img);
+		im=im.convert(mode='RGB')## --
 		imrs=im.resize((m,n))
 		imrs=img_to_array(imrs)/255;
 		imrs=imrs.transpose(2,0,1);
@@ -42,14 +43,15 @@ def cargar_imagenes_prueba(carpeta):
 
 
 def predecir(x):
-	os.chdir(path+"/temp");
+	file_json = 'model.json'
+	file_h5 = 'model.h5'
 	# load json and create model
-	json_file = open('/home/ynl/Desktop/gcnn/train/model.json', 'r')
+	json_file = open(PATH+'/'+file_json, 'r')
 	loaded_model_json = json_file.read()
 	json_file.close()
 	loaded_model = model_from_json(loaded_model_json)
 	# load weights into new model
-	loaded_model.load_weights("/home/ynl/Desktop/gcnn/train/model.h5")
+	loaded_model.load_weights(PATH+'/'+file_h5)
 	# evaluate loaded model on test data
 	loaded_model.compile(loss='categorical_crossentropy',optimizer='adadelta',metrics=['accuracy'])
 	predictions = loaded_model.predict(x)
@@ -68,7 +70,7 @@ def predecir(x):
 
 
 def test():
-	x = cargar_imagenes_prueba("/temp")
+	x = cargar_imagenes_prueba()
 	predecir(x)
 	#matriz de confusion
 	num_clases = 10
@@ -93,12 +95,12 @@ def test():
 
 
 def get_class_from_name(filename):
-	r = "";
+	r = ""
 	for i in filename:
 		if i=="_":
-			break;
-		r+=i;
-	return r;
+			break
+		r+=i
+	return r
 
 
 def get_clases():
@@ -114,6 +116,6 @@ def get_clases():
 		"8" : 8,
 		"9" : 9,
 	}
-	return clases;
+	return clases
 
 test()
