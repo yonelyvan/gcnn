@@ -63,7 +63,7 @@ def train():
 	uniques, id_test=np.unique(y_test,return_inverse=True)
 	Y_test=np_utils.to_categorical(id_test,nb_classes)
 	model = get_cnn_model(x_train.shape[1:],nb_classes);
-	nb_epoch=10; ##iteraciones
+	nb_epoch=50; ##iteraciones
 	batch_size=100;
 	model.fit(x_train,Y_train,batch_size=batch_size,nb_epoch=nb_epoch,verbose=1,validation_data=(x_test, Y_test))
 	#guardar entrenamiento
