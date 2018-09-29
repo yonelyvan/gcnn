@@ -1,4 +1,5 @@
 import random
+from random import randint
 
 ##individuo
 class Individuo:
@@ -114,32 +115,53 @@ P = get_poblacion_inicial(4)
 imprimir_poblacion(P)
 '''
 
-def ruleta(P){
+def ruleta(P):
 	total=0;
-	for (int i = 0; i < P.size(); ++i){
-		total+=P[i].fitness;
-	}
-	double cont=0;
-	vd v_pro;//ruleta
-	for (int i = 0; i < P.size(); ++i){
-		cont += (P[i].fitness*100.0)/total;
-		v_pro.push_back(cont); 
-	}
-	//seleccion
-	poblacion seleccionados;
+	for I in P.P:
+		total += I.fitness
+		
+	cont = 0.0;
+	v_pro = [];#ruleta, vector de probabilidades
 
-	for (int i = 0; i < P.size(); ++i){//P.size()
-		int s= rand()%100;
-		for (int j = 0; j < v_pro.size(); ++j){//verificando a q rango pertenece
-			if( s <= v_pro[j] ){
-				seleccionados.push_back(P[j]);
-				break;
-			}
-		}
-	}
+	for I in P.P:
+		cont += (I.fitness*100.0)/total;
+		v_pro.append(cont); 
+		
+	#seleccion
+	seleccionados = Poblacion([]);
+	for i in range(len(P.P)):
+		s = getRandom(0,100)
+		for j in range(len(v_pro)):
+			if s<=v_pro[j]:
+				seleccionados.insert(P.P[j])
+				break
 	return seleccionados;
-}
 
 
+def torneo(P):
+	seleccionados = Poblacion([])
+	tam_torneo = 3;
+	for I in P.P:
+		P_torneo = Poblacion([])
+		for i in range(tam_torneo):
+			P_torneo.insert(P.P[randint(0,tam_torneo-1)])
+		P_torneo.P.sort(key=takeFitness)
+		seleccionados.insert(P_torneo.P[tam_torneo-1])
+	return seleccionados
 
+
+def takeFitness(elem):
+    return elem.fitness
+
+
+def seleccion(P):
+	return ruleta(P);
+	#return torneo(P);
+
+P = get_poblacion_inicial(8)
+imprimir_poblacion(P)
+
+print "________________"
+P_nueva = seleccion(P)
+imprimir_poblacion(P_nueva) 
 
