@@ -22,6 +22,25 @@ class Poblacion:
 	def __repr__(self):
 		return str(self.P)
 			
+#pila
+class Stack:
+     def __init__(self):
+         self.items = []
+
+     def isEmpty(self):
+         return self.items == []
+
+     def push(self, item):
+         self.items.append(item)
+
+     def pop(self):
+         return self.items.pop()
+
+     def top(self):
+         return self.items[len(self.items)-1]
+
+     def size(self):
+         return len(self.items)
 
 def getRandom(li,ls): #double
   	return random.uniform(li,ls)
@@ -193,10 +212,61 @@ def mutar(P):
 
 
 
+#retorna la primera frontera y el resto
+def get_frontier(P):
+	p_frontera = Poblacion([]) #fontera
+	P_resto = Poblacion([]) #no estan en la frontera
+	#sort(P.begin(), P.end(), decresiente);#ordenar soluciones en x o fx
+	P.P.sort(key=takeFitness, reverse=True)
+
+	front = Stack();
+	front.push(P.P[0]);
+	for i in range(1,len(P.P)):
+		print ":::::::::::: ",i
+		while not front.isEmpty():
+			top_x = fx( front.top() )
+			top_y = gx( front.top() )
+			x = fx( P.P[i]);
+			y = gx( P.P[i]);
+			if top_x >= x  and  top_y >= y:
+				print top_x,">=",x,"	",top_y,">=",y, front.size(),i;
+				print "enter"	
+				P_resto.insert(front.top())   	
+				front.pop()
+			else:
+				break	
+		front.push(P.P[i])
+	
+	while not front.isEmpty():
+		p_frontera.insert(front.top())
+		#cout<<fx(front.top(),front.top())<<" "<<gx(front.top(),front.top())<<endl;
+		front.pop()
+	
+	fronteras =[] 
+	#vector<poblacion> fronteras;
+	fronteras.append( p_frontera );
+	fronteras.append( P_resto );
+	return fronteras;
+
+def get_fronteras(P):
+	contenedor=deepcopy(P);
+	fronteras = [];#vector de fronteras
+	while contenedor.size()>0:
+		#r = [pobl,pobl,pobl] #ronteras
+		r = get_frontier(contenedor);
+		fronteras.append(r[0]);
+		contenedor = r[1];#trabajar con e resto
+	return fronteras;
+
+
+
+
+
+
 
 
 def main():
-	P = get_poblacion_inicial(6)
+	P = get_poblacion_inicial(10)
 	imprimir_poblacion(P)
 	
 	print "======================="
@@ -208,7 +278,13 @@ def main():
 	print "=============mutar=========="
 	mutar(hijos)
 	imprimir_poblacion(hijos)
-
-
+	print "=============fronteras=========="
+	R = get_frontier(hijos);
+	print "=============frontera 1=========="
+	imprimir_poblacion(R[0])
+	print "=============frontera 2=========="
+	imprimir_poblacion(R[1])
+	print "======================="
+	
 
 main()
