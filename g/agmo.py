@@ -1,5 +1,6 @@
 import random
 from random import randint
+from copy import deepcopy
 
 ##individuo
 class Individuo:
@@ -9,8 +10,6 @@ class Individuo:
 
 	def __repr__(self):
 		return "".join(["Individuo(",str(self.cro), ",", str(self.fitness),")"])
-
-
 
 #poblacion -> vector<individuo>
 class Poblacion:
@@ -23,17 +22,6 @@ class Poblacion:
 	def __repr__(self):
 		return str(self.P)
 			
-'''
-P = Poblacion([])
-cro = [1,2,3]
-print cro
-
-ind = Individuo(cro,88)
-P.insert(ind)
-P.insert(ind)
-print ind
-print P
-'''
 
 def getRandom(li,ls): #double
   	return random.uniform(li,ls)
@@ -62,7 +50,7 @@ mix_x = 0
 max_x = 5
 min_y = 0
 max_y = 3
-PROB_MUT = 1 # 0.5-1% [0-100]Probabilidad de Mutacion: 0.05
+PROB_MUT = 5 # 0.5-1% [0-100]Probabilidad de Mutacion: 0.05
 
 def get_fitness(I):
 	return w[0]*fx(I) + w[1]*gx(I)
@@ -91,7 +79,8 @@ def es_valido(I):
 
 def get_poblacion_inicial(tam_poblacion):
 	P = Poblacion([])
-	for i in range(tam_poblacion):
+	cont = 0
+	while True:
 		I = Individuo([],0)
 		x = getRandom(mix_x, max_x);
 		y = getRandom(min_y, max_y);
@@ -100,8 +89,9 @@ def get_poblacion_inicial(tam_poblacion):
 		
 		if es_valido(I):
 			P.insert(I)
-		else:
-			i-=1
+			cont += 1
+		if cont >= tam_poblacion:
+			break
 	return P;
 
 def imprimir_poblacion(P):
@@ -158,10 +148,67 @@ def seleccion(P):
 	return ruleta(P);
 	#return torneo(P);
 
-P = get_poblacion_inicial(8)
-imprimir_poblacion(P)
 
-print "________________"
-P_nueva = seleccion(P)
-imprimir_poblacion(P_nueva) 
+def cruzamiento_blx(P):
+	hijos = Poblacion([])
+	tam_pob =len(P.P)
+	cont = 0
+	while True:
+		h = randint(0,tam_pob-1)
+		k = randint(0,tam_pob-1)
+		B = getRandom(-5.0,1.5) 
+		#cruzar
+		I = Individuo([0,0],0) #--
+		#p1 + B (P2 - P1)
+		I.cro[0] = P.P[h].cro[0] + B*( P.P[k].cro[0]-P.P[h].cro[0] );
+		I.cro[1] = P.P[h].cro[1] + B*( P.P[k].cro[1]-P.P[h].cro[1] );
+		I.fitness = w[0]*fx(I) + w[1]*gx(I);
+		if es_valido(I):
+			hijos.insert(I)
+			cont += 1
+		if cont >= tam_pob:####
+			break
+	return hijos;
 
+
+
+def mutar(P):
+	tam_pob =len(P.P)
+	for i in range(tam_pob):
+		pro_mut = randint(0,100)
+		if pro_mut <= PROB_MUT:
+			print "Mutacion I: ", i
+			I = Individuo([],0)
+			while True:
+				I =deepcopy(P.P[i])
+				k = randint(0,1)
+				if k==0: #en x
+					I.cro[0] = getRandom(mix_x,max_x)
+				if k==1:
+					I.cro[1] = getRandom(min_y,max_y)
+				if es_valido(I):
+					break
+			P.P[i].cro = I.cro
+			P.P[i].fitness = get_fitness(P.P[i])
+
+
+
+
+
+def main():
+	P = get_poblacion_inicial(6)
+	imprimir_poblacion(P)
+	
+	print "======================="
+	P_nueva = seleccion(P)
+	imprimir_poblacion(P_nueva) 
+	print "=============cruzar=========="
+	hijos = cruzamiento_blx(P)
+	imprimir_poblacion(hijos)
+	print "=============mutar=========="
+	mutar(hijos)
+	imprimir_poblacion(hijos)
+
+
+
+main()
