@@ -24,11 +24,11 @@ vector_test =[]
 vector_result =[]
 clases = ['0','1','2','3','4','5','6','7','8','9'] ##clases
 
-
+m,n = 64,64 # dimensiones de la imagen de entrada
 #DATA ENTRENAMIENTO
 def get_data():
 	folder_data = "data_num"; #carpeta de dataset
-	m,n = 32,32 # dimensiones de la imagen de entrada
+	#m,n = 64,64 # dimensiones de la imagen de entrada
 	classes=os.listdir(folder_data) #cada carpeta es una CLASE
 	x=[]
 	y=[]
@@ -49,16 +49,20 @@ def get_data():
 
 def get_cnn_model(shape, nb_classes): #individuo
 	model= Sequential()
+
 	model.add(Convolution2D(16,3,3,border_mode='same',input_shape= shape))
 	model.add(Activation('relu'));
-
-	#model.add(Convolution2D(16,2,2));
-	#model.add(Activation('relu'));
-
-	model.add(Convolution2D(16,2,2));
+	model.add(Convolution2D(16,3,3));
+	model.add(Activation('relu'));
+	
+	model.add(MaxPooling2D(pool_size=(5,5)));
+	'''
+	model.add(Convolution2D(16,1,1));
+	model.add(Activation('relu'));
+	model.add(Convolution2D(16,3,3));
 	model.add(Activation('relu'));
 	model.add(MaxPooling2D(pool_size=(3,3)));
-
+	'''
 	model.add(Dropout(0.5));
 	model.add(Flatten());
 	model.add(Dense(512));
@@ -81,7 +85,7 @@ def train():
 	Y_test=np_utils.to_categorical(id_test,nb_classes)
 	model = get_cnn_model(x_train.shape[1:],nb_classes);
 	nb_epoch=20; ##iteraciones
-	batch_size=500;
+	batch_size=50;
 	model.fit(x_train,Y_train,batch_size=batch_size,nb_epoch=nb_epoch,verbose=1,validation_data=(x_test, Y_test))
 	#guardar entrenamiento
 	model_json = model.to_json()
@@ -96,7 +100,7 @@ def train():
 def cargar_imagenes_prueba():
 	path_data = PATH+folder_datos_prueba
 	# input image dimensions
-	m,n = 32,32
+	#m,n = 32,32
 	x=[]
 	#import natsort #natsort.natsorted(os.listdir(path_data)) #para ordenar por nombre de archivo
 	imgfiles = os.listdir(path_data) 
@@ -154,7 +158,7 @@ def test():
 		total_por_clase[ clases_num[img_class_label] ] +=1
 		#print "imagen: ",get_class_from_name(vector_test[i])," -> ", vector_result[i]
 		
-	#print mc
+	print mc
 	print total_por_clase
 	#prcentages por clase
 	sum = 0.0

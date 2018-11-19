@@ -258,8 +258,8 @@ def distancia(I1, I2):
 	return 2*dx + 2*dy;
 
 def run():
-	iteraciones = 50
-	tam_poblacion = 20
+	iteraciones = 10
+	tam_poblacion = 50
 	D = 4.0
 	P = get_poblacion_inicial(tam_poblacion)
 	for i in range(iteraciones):
@@ -305,9 +305,6 @@ def run():
 						break
 		P = new_P
 		imprimir_poblacion(P)
-
-
-
 
 
 run()
