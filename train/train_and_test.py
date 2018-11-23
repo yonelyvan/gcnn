@@ -10,7 +10,8 @@ import keras
 import numpy as np
 import os
 from PIL import Image
-from sklearn.cross_validation import train_test_split
+#from sklearn.cross_validation import train_test_split
+from sklearn.model_selection import train_test_split
 
 import time
 
