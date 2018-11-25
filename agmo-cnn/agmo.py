@@ -25,7 +25,7 @@ def imprimir_poblacion(P):
 		i+=1
 
 def ruleta(P):
-	total=0;
+	total = 0
 	for I in P:
 		total += I.fitness
 		
@@ -128,7 +128,6 @@ def mutar(P):
 	return P
 
 
-
 def takeVal_fx(elem):
     return elem.val_fx
 
@@ -182,6 +181,7 @@ def distancia(I1, I2):#mejorar distancia
 	dy = abs(I2.val_gx - I1.val_gx);#y
 	return 2.0*dx + 2.0*dy;
 
+'''
 def run():
 	iteraciones = 3
 	tam_poblacion = TAM_POBLACION
@@ -233,41 +233,4 @@ def run():
 
 
 run()
-
-'''
-
-def test():
-	P = get_poblacion_inicial(TAM_POBLACION)
-	imprimir_poblacion(P)
-
-	print "Nueva poblacion >>>>"
-	P_nueva = seleccion(P)
-	imprimir_poblacion(P_nueva) 
-	print "=============cruzar=========="
-	hijos = cruzamiento(P)
-	imprimir_poblacion(hijos)
-	print "=============mutar=========="
-	hijos = mutar(hijos)
-	imprimir_poblacion(hijos)
-
-	print "=============fronteras=========="
-	R = get_frontier(hijos);
-	print "=============frontera 1=========="
-	#imprimir_poblacion(R[0])
-	print "=============frontera 2=========="
-	#imprimir_poblacion(R[1])
-	print "======================="
-
-	FF = get_fronteras(hijos)
-	cont =0
-	for p in FF:
-		print "frontera ", cont
-		cont+=1
-		imprimir_poblacion(p)
-
-	r = get_crom_values(P[1].cro)
-	print r
-
-
-test()
 '''
