@@ -26,10 +26,10 @@ folder_datos_prueba = '/temp'
 #vector_result =[]
 clases = ['0','1','2','3','4','5','6','7','8','9'] ##clases
 
-m,n = 64,64 # dimensiones de la imagen de entrada
+m,n = 128,128 # dimensiones de la imagen de entrada
 
 inf = 1e9
-EPOCH = 25
+EPOCH = 20
 
 
 #DATA ENTRENAMIENTO
@@ -125,11 +125,7 @@ def get_cnn_architecture2(shape, nb_classes, config): #individuo
 	model.compile(loss='categorical_crossentropy',optimizer='adadelta',metrics=['accuracy'])
 	return model
 
-def validar_configuracion(config):
-	for i in config:
-		if(i<1):
-			return False
-	return True
+
 
 
 def train(config):
@@ -274,10 +270,7 @@ def get_clases():
 
 def run_cnn( config ):
 	num_clases = 10
-	time = inf
-	if validar_configuracion(config):
-		time = train( config )
-		return [inf, inf]
+	time = train( config )
 	error = test(num_clases)
 	return [error, time]
 

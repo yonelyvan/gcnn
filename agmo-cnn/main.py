@@ -5,6 +5,7 @@ def run_agmo():
 	tam_poblacion = TAM_POBLACION
 	D = 1
 	P = get_poblacion_inicial(tam_poblacion)
+	P = calcular_fitness(P)
 	for i in range(iteraciones):
 		print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Iteracion: ",i
 		print "Poblacion"
@@ -12,14 +13,15 @@ def run_agmo():
 
 		print "Seleccion"
 		seleccionados = seleccion(P)
-
-		print "Hijos:"
+		#curzamiento y mutacion
 		hijos = cruzamiento(seleccionados)
+		hijos = mutar(hijos)
+		#calculo de fittnes
+		hijos = calcular_fitness(hijos)
+		print "HIJOS"
 		imprimir_poblacion(hijos)
-
-		for e in hijos:
-			P.append(e)
-		P=mutar(P)
+		for I in hijos:
+			P.append(I)
 
 		print "Nueva Poblacion"
 		new_P = []
@@ -54,7 +56,7 @@ run_agmo()
 
 
 '''
-config = get_crom_values("001101101")
+config = get_crom_values("011100011000110001")
 fitness = run_cnn(config)
 print "FITENESS: error, tiempo"
 print fitness

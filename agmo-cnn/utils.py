@@ -25,7 +25,8 @@ def get_crom_values(crom):
 	v_resul = []
 	for i in range(0, TAM_CROMOSOMA, BITS_VALUE):
 		str_val = crom[i:i+BITS_VALUE]
-		v_resul.append( int(str_val,2) )
+		dim = int(str_val,2)+1 ##convolucion valida si dimension >=1
+		v_resul.append( dim ) 
 	return v_resul
 
 
@@ -38,7 +39,9 @@ class Individuo:
 		self.val_gx = 0 #tiempo
 	
 	def calcular_fitness(self):
+		print "Calculando fitnes de individuo:"
 		config = get_crom_values(self.cro)
+		print "CONFIG:",config
 		result = run_cnn( config )
 		self.val_fx = result[0] #fx(self.cro)
 		self.val_gx = result[1] #gx(self.cro)

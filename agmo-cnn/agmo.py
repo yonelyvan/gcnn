@@ -14,9 +14,17 @@ def get_poblacion_inicial(tam_poblacion):
 		I.cro = ""
 		for j in range(TAM_CROMOSOMA):
 			I.cro += choice(["0", "1"])
-		I.calcular_fitness() #******
+		#I.calcular_fitness() #******
 		P.append(I)
 	return P;
+
+def calcular_fitness(P):
+	R =[]
+	for I in P:
+		I.calcular_fitness()
+		R.append(I)
+	return R;
+
 
 def imprimir_poblacion(P):
 	i=0
@@ -101,8 +109,8 @@ def cruzamiento(P):
 					hijo1.cro += P[id_p2].cro[i]
 					hijo2.cro += P[id_p1].cro[i]
 
-			hijo1.calcular_fitness()#******
-			hijo2.calcular_fitness()#******
+			#hijo1.calcular_fitness()#******
+			#hijo2.calcular_fitness()#******
 			hijos.append(hijo1)
 			hijos.append(hijo2)
 			#print "Hijo-1:  ",hijo1.cro
@@ -124,7 +132,7 @@ def mutar(P):
 				cro[id_bit] = '1'
 			P[i].cro = "".join(cro)
 			print "Mutacion I: ", i,") ",P[i].cro
-			P[i].calcular_fitness();#****** 
+			#P[i].calcular_fitness();#****** 
 	return P
 
 
