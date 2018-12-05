@@ -26,10 +26,9 @@ folder_datos_prueba = '/temp'
 #vector_result =[]
 clases = ['0','1','2','3','4','5','6','7','8','9'] ##clases
 
-m,n = 128,128 # dimensiones de la imagen de entrada
-
-inf = 1e9
+m,n = 196,196 #256,256 # dimensiones de la imagen de entrada
 EPOCH = 20
+
 
 
 #DATA ENTRENAMIENTO
@@ -167,8 +166,6 @@ def train(config):
 #DATA PRUEBA
 def cargar_imagenes_prueba():
 	path_data = PATH+folder_datos_prueba
-	# input image dimensions
-	#m,n = 32,32
 	x=[]
 	vector_test = []
 	#import natsort #natsort.natsorted(os.listdir(path_data)) #para ordenar por nombre de archivo
@@ -224,7 +221,7 @@ def test(num_clases):
 		result_label = vector_result[i]
 		mc[ clases_num[img_class_label], clases_num[result_label]] +=1
 		total_por_clase[ clases_num[img_class_label] ] +=1
-		#print "imagen: ",get_class_from_name(vector_test[i])," -> ", vector_result[i]
+		#print i,")","imagen: ",get_class_from_name(vector_test[i])," -> ", vector_result[i]
 		
 	#print mc
 	print total_por_clase
@@ -237,6 +234,7 @@ def test(num_clases):
 		print img_class_label, " : ", porcentaje, "%"
 		sum += porcentaje
 	promedio = sum/num_clases
+	print "Numero de clases(10):",num_clases
 	print "Promedio: ", promedio, "%"
 	error = 100.0-promedio
 	return error
@@ -272,6 +270,8 @@ def run_cnn( config ):
 	num_clases = 10
 	time = train( config )
 	error = test(num_clases)
+	os.remove("models/model.json")
+	os.remove("models/model.h5")
 	return [error, time]
 
 

@@ -1,5 +1,5 @@
 from cnn import *
-w = [2,1] #pesos para cada funcion objetivo [fx,gx] [error, tiempo]
+w = [0.6, 0.4] #pesos para cada funcion objetivo [fx,gx] [error, tiempo]
 INF = 1e9
 
 TAM_POBLACION = 10 #%
@@ -75,3 +75,9 @@ class Stack:
          return len(self.items)
 
 
+
+
+def save_log(str):
+	with open('LOG.txt','a') as text_file:
+		text_file.write(str+"\n")
+		text_file.close()

@@ -30,6 +30,7 @@ def imprimir_poblacion(P):
 	i=0
 	for I in P:
 		print i,") ", "CRO: ",I.cro, " ",I.val_fx," ",I.val_gx,"	","	|",I.fitness
+		save_log( str(i)+") "+ "CRO: "+I.cro+ " "+str(I.val_fx)+" "+str(I.val_gx)+"	"+"	|"+str(I.fitness) )
 		i+=1
 
 def ruleta(P):
@@ -92,10 +93,12 @@ def cruzamiento(P):
 		#verificar la probabilidad de cruze
 		if randint(0,100) < PROB_CRUZAMIENTO:
 			#print "_______________________"
-			#print "Mascara: ",mascara
-			#print "Padre-1: ",P[id_p1].cro
-			#print "Padre-2: ",P[id_p2].cro
-
+			print "Mascara: ",mascara
+			print "Padre-1: ",P[id_p1].cro
+			print "Padre-2: ",P[id_p2].cro
+			save_log("Mascara: "+mascara)
+			save_log("Padre-1: "+P[id_p1].cro)
+			save_log("Padre-2: "+P[id_p2].cro)
 			#cruzar
 			hijo1 = Individuo([])
 			hijo2 = Individuo([])
@@ -113,8 +116,10 @@ def cruzamiento(P):
 			#hijo2.calcular_fitness()#******
 			hijos.append(hijo1)
 			hijos.append(hijo2)
-			#print "Hijo-1:  ",hijo1.cro
-			#print "Hijo-2:  ",hijo2.cro
+			print "Hijo-1:  ",hijo1.cro
+			print "Hijo-2:  ",hijo2.cro
+			save_log( "Hijo-1:  "+hijo1.cro)
+			save_log( "Hijo-2:  "+hijo2.cro)
 			cont+=2
 	return hijos
 
@@ -125,6 +130,7 @@ def mutar(P):
 		if pro_mut <= PROB_MUTACION:
 			id_bit = randint(0,TAM_CROMOSOMA-1);
 			print "Mutacion I: ", i,") ",P[i].cro, " en bit: ", id_bit
+			save_log("Mutacion I: "+ str(i)+") "+P[i].cro+ " en bit: "+ str(id_bit));
 			cro = list(P[i].cro)
 			if  P[i].cro[id_bit] =='1':
 				cro[id_bit] = '0'
@@ -132,6 +138,7 @@ def mutar(P):
 				cro[id_bit] = '1'
 			P[i].cro = "".join(cro)
 			print "Mutacion I: ", i,") ",P[i].cro
+			save_log("Mutacion I: "+ str(i)+") "+P[i].cro )
 			#P[i].calcular_fitness();#****** 
 	return P
 

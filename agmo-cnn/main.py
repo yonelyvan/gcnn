@@ -1,17 +1,21 @@
 from agmo import *
 
 def run_agmo():
-	iteraciones = 5
+	save_log("LOG")
+	iteraciones = 15
 	tam_poblacion = TAM_POBLACION
 	D = 1
 	P = get_poblacion_inicial(tam_poblacion)
 	P = calcular_fitness(P)
 	for i in range(iteraciones):
 		print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Iteracion: ",i
+		save_log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> Iteracion: "+ str(i) )
 		print "Poblacion"
+		save_log("Poblacion")
 		imprimir_poblacion(P)
 
 		print "Seleccion"
+		save_log("Seleccion")
 		seleccionados = seleccion(P)
 		#curzamiento y mutacion
 		hijos = cruzamiento(seleccionados)
@@ -19,11 +23,13 @@ def run_agmo():
 		#calculo de fittnes
 		hijos = calcular_fitness(hijos)
 		print "HIJOS"
+		save_log("HIJOS")
 		imprimir_poblacion(hijos)
 		for I in hijos:
 			P.append(I)
 
 		print "Nueva Poblacion"
+		save_log("Nueva Poblacion")
 		new_P = []
 		fronteras = get_fronteras(P)
 
