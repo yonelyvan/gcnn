@@ -20,7 +20,7 @@ K.set_image_dim_ordering('th')
 print "-------------------------------------------\n"
 
 PATH = os.getcwd();  #/home/y/.../gcnn/train"
-folder_datos_prueba = '/temp' 
+folder_datos_prueba = '/test' 
 
 #vector_test =[]
 #vector_result =[]
@@ -33,7 +33,7 @@ EPOCH = 20
 
 #DATA ENTRENAMIENTO
 def get_data():
-	folder_data = "data_num"; #carpeta de dataset
+	folder_data = "train"; #carpeta de dataset
 	#m,n = 64,64 # dimensiones de la imagen de entrada
 	classes=os.listdir(folder_data) #cada carpeta es una CLASE
 	x=[]
@@ -53,71 +53,29 @@ def get_data():
 	y=np.array(y);
 	return [x,y,classes];
 
-def get_cnn_model(shape, nb_classes): #individuo
-	model= Sequential()
 
-	model.add(Convolution2D(16,3,3,border_mode='same',input_shape= shape))
-	model.add(Activation('relu'));
-	model.add(Convolution2D(16,3,3));
-	model.add(Activation('relu'));
-	
-	model.add(MaxPooling2D(pool_size=(5,5)));
-	'''
-	model.add(Convolution2D(16,1,1));
-	model.add(Activation('relu'));
-	model.add(Convolution2D(16,3,3));
-	model.add(Activation('relu'));
-	model.add(MaxPooling2D(pool_size=(3,3)));
-	'''
-	model.add(Dropout(0.5));
-	model.add(Flatten());
-	model.add(Dense(512));
-	model.add(Dropout(0.5));
-	model.add(Dense(nb_classes));#fullconected?
-	model.add(Activation('softmax'));
-	model.compile(loss='categorical_crossentropy',optimizer='adadelta',metrics=['accuracy'])
-	return model
 
-#config [5,3,..,2] del cromosoma "11010..101" 
+
 def get_cnn_architecture(shape, nb_classes, config): #individuo
 	model= Sequential()
 
-	model.add(Convolution2D(16,config[0],config[0],border_mode='same',input_shape= shape))
+	model.add(Convolution2D(8,config[0],config[0],border_mode='same',input_shape= shape))
 	model.add(Activation('relu'));
-	model.add(Convolution2D(16, config[1],config[1] ));
-	model.add(Activation('relu'));
-	
-	model.add(MaxPooling2D(pool_size=(config[2],config[2])));
-
-	model.add(Dropout(0.5));
-	model.add(Flatten());
-	model.add(Dense(512));
-	model.add(Dropout(0.5));
-	model.add(Dense(nb_classes));#fullconected?
-	model.add(Activation('softmax'));
-	model.compile(loss='categorical_crossentropy',optimizer='adadelta',metrics=['accuracy'])
-	return model
-
-def get_cnn_architecture2(shape, nb_classes, config): #individuo
-	model= Sequential()
-
-	model.add(Convolution2D(16,config[0],config[0],border_mode='same',input_shape= shape))
-	model.add(Activation('relu'));
-	model.add(Convolution2D(16, config[1],config[1] ));
+	model.add(Convolution2D(8, config[1],config[1] ));
 	model.add(Activation('relu'));
 	
 	model.add(MaxPooling2D(pool_size=(config[2],config[2])));
 
-	model.add(Convolution2D(16,config[3],config[3]));
+	model.add(Convolution2D(8,config[3],config[3]));
 	model.add(Activation('relu'));
-	model.add(Convolution2D(16,config[4],config[4]));
+	model.add(Convolution2D(8,config[4],config[4]));
 	model.add(Activation('relu'));
 	
 	model.add(MaxPooling2D(pool_size=(config[5],config[5])));
 	
 	model.add(Dropout(0.5));
 	model.add(Flatten());
-	model.add(Dense(512));
+	model.add(Dense(1024));
 	model.add(Dropout(0.5));
 	model.add(Dense(nb_classes));#fullconected?
 	model.add(Activation('softmax'));
@@ -137,7 +95,7 @@ def train(config):
 	Y_train=np_utils.to_categorical(id_train,nb_classes)
 	uniques, id_test=np.unique(y_test,return_inverse=True)
 	Y_test=np_utils.to_categorical(id_test,nb_classes)
-	model = get_cnn_architecture2(x_train.shape[1:],nb_classes, config);
+	model = get_cnn_architecture(x_train.shape[1:],nb_classes, config);
 	nb_epoch = EPOCH; ##iteraciones
 	batch_size = 50;
 	#time
@@ -164,25 +122,52 @@ def train(config):
 ############################################################################################
 
 #DATA PRUEBA
-def cargar_imagenes_prueba():
+def cargar_imagenes_prueba_una_carpeta():
 	path_data = PATH+folder_datos_prueba
 	x=[]
 	vector_test = []
 	#import natsort #natsort.natsorted(os.listdir(path_data)) #para ordenar por nombre de archivo
 	imgfiles = os.listdir(path_data) 
 	#print imgfiles
-	for img in imgfiles:##para cada imagen
-		#print img
-		vector_test.append(img)
-		im=Image.open(path_data+'/'+img);
+	for img_label in imgfiles:##para cada imagen
+		#print img_label
+		vector_test.append(img_label)
+		im=Image.open(path_data+'/'+img_label);
 		im=im.convert(mode='RGB')## --
 		imrs=im.resize((m,n))
 		imrs=img_to_array(imrs)/255;
 		imrs=imrs.transpose(2,0,1);
 		imrs=imrs.reshape(3,m,n);
 		x.append(imrs)
+		#print "labeli:", img_label
 	x=np.array(x);
+	print "NORMAL"
+	#print vector_test
 	return [x, vector_test]
+
+#DATA ENTRENAMIENTO
+def cargar_imagenes_prueba():
+	folder_data =  PATH+folder_datos_prueba #"data_num"; #carpeta de dataset
+	#m,n = 64,64 # dimensiones de la imagen de entrada
+	classes=os.listdir(folder_data) #cada carpeta es una CLASE
+	x=[] #image
+	y=[] #clase
+	for fol in classes:##para cada clase fol==[class 1,class 2, .., class N]
+		imgfiles=os.listdir(folder_data+'/'+fol);
+		for img in imgfiles:##para cada imagen
+			im=Image.open(folder_data+'/'+fol+'/'+img);
+			im=im.convert(mode='RGB') ##  --
+			imrs=im.resize((m,n))
+			imrs=img_to_array(imrs)/255;
+			imrs=imrs.transpose(2,0,1);
+			imrs=imrs.reshape(3,m,n);
+			x.append(imrs)
+			y.append(fol)
+			#print "labeli:",fol
+	x=np.array(x);
+	y=np.array(y);
+	print "NORMAL"
+	return [x,y];
 
 
 def clasificar(x):
@@ -276,6 +261,6 @@ def run_cnn( config ):
 
 
 
-#fitness = run([3,3,5])
-#print "FITENESS: error, tiempo"
-#print fitness
+fitness = run_cnn([3,3,2,2,2,3])
+print "FITENESS: error, tiempo"
+print fitness
