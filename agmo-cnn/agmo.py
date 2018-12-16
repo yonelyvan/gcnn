@@ -14,20 +14,34 @@ def get_poblacion_inicial(tam_poblacion):
 		I.cro = ""
 		for j in range(TAM_CROMOSOMA):
 			I.cro += choice(["0", "1"])
-		#I.calcular_fitness() #******
 		P.append(I)
 	return P;
 
-def calcular_fitness(P):
+def calcular_fitness(P,data):
 	R =[]
 	for I in P:
-		I.calcular_fitness()
+		I.calcular_fitness(data)
 		R.append(I)
 	return R;
 
 
-def imprimir_poblacion(P):
+#guardar ultima poblacion
+def imprimir_poblacion(P, message,it):
 	i=0
+	print message
+	save_log(message)
+	str_poblacion = str(it)+"\n"
+	for I in P:
+		print i,") ", "CRO: ",I.cro, " ",I.val_fx," ",I.val_gx,"	","	|",I.fitness
+		save_log( str(i)+") "+ "CRO: "+I.cro+ " "+str(I.val_fx)+" "+str(I.val_gx)+"	"+"	|"+str(I.fitness) )
+		str_poblacion += I.cro+" "+str(I.val_fx)+" "+str(I.val_gx)+" "+str(I.fitness)+"\n"
+		i+=1
+	guardar_ultima_poblacion(str_poblacion)
+
+def ver_poblacion(P,message):
+	i=0
+	print message
+	save_log(message)
 	for I in P:
 		print i,") ", "CRO: ",I.cro, " ",I.val_fx," ",I.val_gx,"	","	|",I.fitness
 		save_log( str(i)+") "+ "CRO: "+I.cro+ " "+str(I.val_fx)+" "+str(I.val_gx)+"	"+"	|"+str(I.fitness) )
@@ -59,6 +73,7 @@ def ruleta(P):
 
 def takeFitness(elem):
     return elem.fitness
+    #return w[0]*elem.val_fx + w[1]*elem.val_gx
 
 def torneo(P):
 	seleccionados = []
@@ -112,8 +127,6 @@ def cruzamiento(P):
 					hijo1.cro += P[id_p2].cro[i]
 					hijo2.cro += P[id_p1].cro[i]
 
-			#hijo1.calcular_fitness()#******
-			#hijo2.calcular_fitness()#******
 			hijos.append(hijo1)
 			hijos.append(hijo2)
 			print "Hijo-1:  ",hijo1.cro
@@ -139,7 +152,6 @@ def mutar(P):
 			P[i].cro = "".join(cro)
 			print "Mutacion I: ", i,") ",P[i].cro
 			save_log("Mutacion I: "+ str(i)+") "+P[i].cro )
-			#P[i].calcular_fitness();#****** 
 	return P
 
 

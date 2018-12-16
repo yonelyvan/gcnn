@@ -1,14 +1,16 @@
 from cnn import *
-w = [0.6, 0.4] #pesos para cada funcion objetivo [fx,gx] [error, tiempo]
+w = [1, 0.2] #pesos para cada funcion objetivo [fx,gx] [error, tiempo]
 INF = 1e9
+BITS_VALUE = 3 #numero bits por valor
 
-TAM_POBLACION = 10 #%
-#numero bits por valor
-BITS_VALUE = 3
+TAM_POBLACION = 14
 TAM_CROMOSOMA = 6*BITS_VALUE
-PROB_CRUZAMIENTO = 90 #%
-PROB_MUTACION = 5 #%
+PROB_CRUZAMIENTO = 95 #%
+PROB_MUTACION = 10 #%
 
+
+
+ULTIMA_POBLACION = "ultima_poblacion.txt"
 '''
 def fx(cro):#cnn_error
 	config = get_crom_values(cro)
@@ -38,18 +40,14 @@ class Individuo:
 		self.val_fx = 0 #error
 		self.val_gx = 0 #tiempo
 	
-	def calcular_fitness(self):
+	def calcular_fitness(self, data):
 		print "Calculando fitnes de individuo:"
 		config = get_crom_values(self.cro)
 		print "CONFIG:",config
-		result = run_cnn( config )
+		result = run_cnn( config, data)
 		self.val_fx = result[0] #fx(self.cro)
 		self.val_gx = result[1] #gx(self.cro)
 		self.fitness = w[0]*self.val_fx + w[1]*self.val_gx
-
-		#self.val_fx = fx(self.cro)
-		#self.val_gx = gx(self.cro)
-		#self.fitness = w[0]*self.val_fx + w[1]*self.val_gx
 
 	def __repr__(self):
 		return "".join(["Individuo(",str(self.cro), ",", str(self.fitness),")"])
@@ -79,5 +77,10 @@ class Stack:
 
 def save_log(str):
 	with open('LOG.txt','a') as text_file:
+		text_file.write(str+"\n")
+		text_file.close()
+
+def guardar_ultima_poblacion(str):
+	with open(ULTIMA_POBLACION,'w') as text_file:
 		text_file.write(str+"\n")
 		text_file.close()
